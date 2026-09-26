@@ -92,21 +92,6 @@
   it (see the paper's appendix).</p>
 </section>
 
-<section id="selection">
-  <h2>How the samples were chosen</h2>
-  <p>The samples were not picked by ear. For each model, eligible prompts meet all of these conditions:</p>
-  <ul class="notes">
-    <li>they come from the test split, first realization (r0);</li>
-    <li>every column finished generation (status ok);</li>
-    <li>on Moshi, the text stream is non-empty in every generated column;</li>
-    <li>the post-hoc watermark was actually embedded (its clip differs from the carrier).</li>
-  </ul>
-  <p>There is no length filter. The eligible prompt IDs are sorted, shuffled with seed <code>{{SEED}}</code> (one shuffle
-  per model), and the first three are shown. Each robustness table uses row 1 of its model. <code>build.py</code>,
-  <code>selection.json</code> and <code>provenance.csv</code> in the repository reproduce the page and map every clip to
-  its source file and score.</p>
-</section>
-
 <section id="credits">
   <h2>Prompt audio</h2>
   <p>The Moshi prompts are recordings from the WildVoice subset of VoiceBench (Chen et al., 2024,

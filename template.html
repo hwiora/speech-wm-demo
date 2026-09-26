@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{METHOD}} Audio Samples</title>
+<meta name="description" content="Audio samples for an anonymous ICLR 2027 submission on token-level watermarking for generated speech.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hero">
+  <p class="venue">Anonymous ICLR 2027 submission · audio samples</p>
+  <h1>{{TITLE}}</h1>
+  <p class="authors">Anonymous authors</p>
+  <nav class="links">{{PAPER}}</nav>
+</header>
+
+<main>
+<section id="summary">
+  <p class="summary">Speech language models such as Moshi generate audio as discrete codec tokens. A token-level watermark
+  biases those tokens during generation, but decoding the tokens to a waveform and encoding it again changes some token
+  identities, and repeated codec passes erase most of the signal. {{METHOD}} builds the watermark around these
+  substitutions. Tokens that replace each other under retokenization define a smooth basis, and in that basis the embedding
+  and detection functions are optimized so that the watermark survives resynthesis, within the same distortion (KL) budget as KGW.
+  This page plays watermarked and unwatermarked speech from three models, and the same clips after repeated codec passes.</p>
+</section>
+
+<section id="how">
+  <h2>How it works</h2>
+  <figure class="fig">
+    <img src="assets/overview.png" alt="Figure 1 of the paper. (a) Decoding generated tokens and encoding the audio again changes some of them. (b) Substitutions define a graph; its smoothest modes form a basis; signal, cost and noise are measured in it; the solved functions g and h embed and detect the watermark." width="2200" height="820">
+    <figcaption>Figure 1 of the paper. Token IDs, graphs and matrices are schematic.</figcaption>
+  </figure>
+  <p>The watermark biases the codec tokens that the model samples, using a secret key and an embedding function <i>g</i>. The
+  detector re-encodes the received audio with the model's codec and sums a keyed score <i>h</i> over the recovered tokens.
+  Because <i>g</i> and <i>h</i> are built from the substitutions that decoding and re-encoding actually make, the score
+  survives resynthesis through neural codecs. The speech model and the codec weights are unchanged.</p>
+</section>
+
+<section id="listen">
+  <h2>How to read the samples</h2>
+  <ul class="notes">
+    <li>Each watermarked clip sits beside its own unwatermarked clip. WMAR's unwatermarked clip comes from the same
+      fine-tuned decoder. CRAW, a post-hoc waveform watermark, is embedded into the unwatermarked clip of the same row.</li>
+    <li>On Moshi, every column is a separate answer to the same spoken question, because the watermark changes which tokens
+      are sampled, so the answers differ in content. The answer's text stream is printed under each player. The TTS models
+      read the same sentence in every column.</li>
+    <li><span class="mark yes inline"><span class="dot"></span>Detected</span> and
+      <span class="mark no inline"><span class="dot"></span>Not detected</span> are the paper's decisions for that exact
+      clip at each method's fixed threshold. The threshold is set on unwatermarked calibration answers so that at most 1% of
+      them exceed it, and it is never recalibrated for an attack. Token-domain methods also show their score <i>z</i>.
+      Post-hoc scores are on other scales, so only the decision is shown.</li>
+    <li>Moshi is watermarked on streams 1–4 at δ = 0.7, CosyVoice3 at δ = 0.9 and MOSS-TTS on heads 1–16 at δ = 0.9. KGW
+      uses δ = 2 on the same streams. WMAR is shown in its FT variant; FT+Augs is in the paper.</li>
+    <li>All audio is served as the evaluated files, 24 kHz WAV copied byte for byte with no re-encoding. The spoken prompts
+      are the original WildVoice recordings.</li>
+  </ul>
+</section>
+
+<section id="moshi">
+  <h2>Moshi</h2>
+  <p class="lede">Full-duplex spoken dialogue with the Mimi codec. Each card is one test question.</p>
+  {{MOSHI}}
+</section>
+
+<section id="cosy">
+  <h2>CosyVoice3</h2>
+  <p class="lede">Text-to-speech. Each card is one test sentence.</p>
+  {{COSYVOICE3}}
+</section>
+
+<section id="moss">
+  <h2>MOSS-TTS Delay-8B</h2>
+  <p class="lede">Text-to-speech. Each card is one test sentence.</p>
+  {{MOSS}}
+</section>
+
+<section id="robust">
+  <h2>Robustness to repeated resynthesis</h2>
+  <p class="lede">Each pass decodes the waveform with a neural codec and encodes it again. The clips below are the audio the
+  detector received, and each mark is the detector's decision on that clip.</p>
+  <h3>Moshi</h3>
+  {{ROBUST_MOSHI}}
+  <h3>CosyVoice3</h3>
+  {{ROBUST_COSYVOICE3}}
+  <h3>MOSS-TTS Delay-8B</h3>
+  {{ROBUST_MOSS}}
+  <p class="limit"><b>Limitations.</b> A time shift by a fraction of a codec frame, such as 40 ms on the 12.5 Hz models
+  Moshi and MOSS-TTS, or cropping the start of a clip, removes most of the watermark, and repeated DAC 16 kHz passes weaken
+  it (see the paper's appendix).</p>
+</section>
+
+<section id="selection">
+  <h2>How the samples were chosen</h2>
+  <p>The samples were not picked by ear. For each model, eligible prompts meet all of these conditions:</p>
+  <ul class="notes">
+    <li>they come from the test split, first realization (r0);</li>
+    <li>every column finished generation (status ok);</li>
+    <li>on Moshi, the text stream is non-empty in every generated column;</li>
+    <li>the post-hoc watermark was actually embedded (its clip differs from the carrier).</li>
+  </ul>
+  <p>There is no length filter. The eligible prompt IDs are sorted, shuffled with seed <code>{{SEED}}</code> (one shuffle
+  per model), and the first three are shown. Each robustness table uses row 1 of its model. <code>build.py</code>,
+  <code>selection.json</code> and <code>provenance.csv</code> in the repository reproduce the page and map every clip to
+  its source file and score.</p>
+</section>
+
+<section id="credits">
+  <h2>Prompt audio</h2>
+  <p>The Moshi prompts are recordings from the WildVoice subset of VoiceBench (Chen et al., 2024,
+  <a href="https://arxiv.org/abs/2410.17196">arXiv:2410.17196</a>;
+  <a href="https://huggingface.co/datasets/hlt-lab/voicebench">dataset</a>). They are released under the Apache License 2.0
+  and redistributed here unmodified; see <code>NOTICE</code>. All other audio on this page is the output of the evaluated
+  models.</p>
+</section>
+</main>
+
+<footer>
+  <p>Anonymous submission.</p>
+</footer>
+</body>
+</html>

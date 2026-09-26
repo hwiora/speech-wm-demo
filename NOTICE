@@ -1,0 +1,11 @@
+Third-party audio in this repository
+====================================
+
+audio/prompts/wildvoice_*.wav
+
+  Spoken prompts from the WildVoice subset of VoiceBench
+  (https://huggingface.co/datasets/hlt-lab/voicebench, arXiv:2410.17196).
+  Licensed under the Apache License, Version 2.0; a copy is in LICENSES/Apache-2.0.txt.
+  The files are extracted from the dataset release and redistributed without trimming, resampling or editing.
+
+All other audio files are outputs of the speech models evaluated in the accompanying submission.

@@ -1,0 +1,8 @@
+{
+  "seed": 2027,
+  "sections": {
+    "moshi":      {"n": 3, "prompts": []},
+    "cosyvoice3": {"n": 3, "prompts": []},
+    "moss":       {"n": 3, "prompts": []}
+  }
+}

@@ -3,8 +3,8 @@
   "moshi": {
     "prompts": [
       "wildvoice_0955",
-      "wildvoice_0467",
-      "wildvoice_0792"
+      "wildvoice_0866",
+      "wildvoice_0988"
     ],
     "hand_picked": false
   },
@@ -19,8 +19,8 @@
   "moss": {
     "prompts": [
       "text_eval_00434",
-      "text_eval_00168",
-      "text_eval_00466"
+      "text_eval_00466",
+      "text_eval_00392"
     ],
     "hand_picked": false
   }

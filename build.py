@@ -188,7 +188,10 @@ def select(bb: str, spec: dict, seed: int, man: dict, test: set[str]) -> tuple[l
     pool = sorted(p for p in test if eligible(bb, man, p))
     random.Random(f"{seed}:{bb}").shuffle(pool)
     picked = []
+    skip = set(spec.get("skip", []))  # drawn prompts replaced by the next ones in the same order
     for p in pool:
+        if p in skip:
+            continue
         null = Path(man[(ARMS[bb]["null"]["arm"], p)]["wav"])
         if not differs(posthoc_clip(bb, p), null):  # post-hoc watermark actually embedded
             continue
